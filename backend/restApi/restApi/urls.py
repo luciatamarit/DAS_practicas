@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from users.views import UsageView
 
 # urlpatterns = [
 
@@ -22,5 +23,6 @@ urlpatterns = [
     path("api/healthcheck/", include("healthcheck.urls")),
     path("api/chats/", include("chats.urls")),
     path("api/users/", include("users.urls")),
+    path("api/usage/", UsageView.as_view()),
 ]
 

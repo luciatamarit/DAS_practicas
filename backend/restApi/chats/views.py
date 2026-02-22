@@ -1,5 +1,9 @@
 from django.shortcuts import render
 
+from django.utils import timezone
+from datetime import timedelta
+from users.models import Usage
+
 # Create your views here.
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -70,7 +74,28 @@ class SendMessageView(generics.ListCreateAPIView):
             user=self.request.user
         )
 
+        usage, _ = Usage.objects.get_or_create(user=request.user)
+
+        now = timezone.now()
+
+        if now >= usage.reset_date:
+            usage.messages_used = 0
+            usage.reset_date = now + timedelta(days=30)
+
+        # Comprobar límite
+        if usage.messages_used >= usage.messages_limit:
+            return Response(
+                {"detail": "Monthly message limit exceeded."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Incrementar contador
+        usage.messages_used += 1
+        usage.save()
+
+        # Guardar mensaje
         message = serializer.save(chat=chat, role="user")
+
         return Response(
             ChatMessageSerializer(message).data,
             status=status.HTTP_201_CREATED
