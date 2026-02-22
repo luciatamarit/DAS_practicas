@@ -84,6 +84,7 @@ class SendMessageView(generics.ListCreateAPIView):
         if now >= usage.reset_date:
             usage.messages_used = 0
             usage.reset_date = now + timedelta(days=30)
+            usage.save()
 
         # Comprobar límite
         if usage.messages_used >= usage.messages_limit:
