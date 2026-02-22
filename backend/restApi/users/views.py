@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 
+from rest_framework import generics
+
 from .models import Usage
 from .serializers import (
     RegisterSerializer,
@@ -16,14 +18,11 @@ from .serializers import (
 User = get_user_model()
 
 
-class RegisterView(APIView):
-    permission_classes = [AllowAny]
 
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class RegisterView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
+    queryset = User.objects.all()
 
 
 class ProfileView(APIView):
@@ -42,11 +41,16 @@ class ProfileView(APIView):
         return Response(serializer.data)
 
 
-class ChangePasswordView(APIView):
-    permission_classes = [IsAuthenticated]
 
-    def put(self, request):
-        serializer = ChangePasswordSerializer(data=request.data)
+class ChangePasswordView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChangePasswordSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         if not request.user.check_password(serializer.validated_data["old_password"]):
@@ -57,6 +61,7 @@ class ChangePasswordView(APIView):
 
         request.user.set_password(serializer.validated_data["new_password"])
         request.user.save()
+
         return Response({"detail": "Password updated successfully."})
 
 
