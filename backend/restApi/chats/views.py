@@ -21,6 +21,9 @@ from .serializers import ChatMessageSerializer, ChatMessageCreateSerializer
 
 from drf_spectacular.utils import extend_schema, inline_serializer,extend_schema_view
 
+import json
+import urllib.request
+
 class ChatListCreateView(generics.ListCreateAPIView):
     serializer_class = ChatSerializer
     permission_classes = [IsAuthenticated]
@@ -96,7 +99,52 @@ class SendMessageView(generics.ListCreateAPIView):
         # Guardar mensaje
         message = serializer.save(chat=chat, role="user")
 
+        # # ---- Llamar a Ollama con contexto del chat ----
+        # import json
+        # import urllib.request
+
+        # Construir contexto: últimos 10 mensajes (incluye el que acabas de guardar)
+        history = ChatMessage.objects.filter(chat=chat).order_by("-created_at")[:10]
+        history = reversed(history)
+
+        messages = [{"role": m.role, "content": m.content} for m in history]
+
+        payload = {
+            "model": "llama3.2:1b",  # o ponlo luego en settings/env
+            "messages": messages,
+            "stream": False,
+        }
+
+        req = urllib.request.Request(
+            "http://ollama:11434/api/chat",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+        )
+
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                out = json.loads(r.read().decode("utf-8"))
+            assistant_text = out["message"]["content"]
+        except Exception:
+            assistant_text = "⚠️ Error generating response. Please try again."
+
+        # Guardar respuesta del asistente
+        assistant_msg = ChatMessage.objects.create(
+            chat=chat,
+            role="assistant",
+            content=assistant_text
+        )
+
+        # Devolver ambos mensajes (user + assistant)
         return Response(
-            ChatMessageSerializer(message).data,
+            {
+                "user": ChatMessageSerializer(message).data,
+                "assistant": ChatMessageSerializer(assistant_msg).data,
+            },
             status=status.HTTP_201_CREATED
         )
+
+        # return Response(
+        #     ChatMessageSerializer(message).data,
+        #     status=status.HTTP_201_CREATED
+        # )
