@@ -51,7 +51,9 @@ INSTALLED_APPS = [
     "corsheaders",
     "healthcheck",
     'chats',
+
      "users",
+
     
 ]
 
