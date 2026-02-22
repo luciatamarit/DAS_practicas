@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
-from .models import Usage
+from users.models import Usage
 
 User = get_user_model()
 
