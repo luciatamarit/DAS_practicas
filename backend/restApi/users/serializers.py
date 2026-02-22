@@ -5,15 +5,15 @@ import re
 
 User = get_user_model()
 
-
-
 class RegisterSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(write_only=True, required=False, allow_blank=False)
+    password2 = serializers.CharField(write_only=True, required=False, allow_blank=False)
 
     class Meta:
         model = User
-        fields = ("username", "email", "password")
+        fields = ("username", "email", "password", "password1", "password2")
         extra_kwargs = {
-            "password": {"write_only": True}
+            "password": {"write_only": True, "required": False, "allow_blank": False},
         }
 
     def validate_username(self, value):
@@ -21,30 +21,48 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Username already exists.")
         return value
 
+    def validate_email(self, value):
+        if not value or "@" not in value:
+            raise serializers.ValidationError("Invalid email format.")
+        return value
+
+    def _validate_password_rules(self, pwd: str) -> None:
+        if len(pwd) <= 8:
+            raise serializers.ValidationError({"password": "Password must be longer than 8 characters."})
+        if not re.search(r"[A-Z]", pwd):
+            raise serializers.ValidationError({"password": "Password must include at least one uppercase letter."})
+        if not re.search(r"[a-z]", pwd):
+            raise serializers.ValidationError({"password": "Password must include at least one lowercase letter."})
+
     def validate(self, attrs):
-        password = attrs.get("password")
+        p = attrs.get("password")
+        p1 = attrs.get("password1")
+        p2 = attrs.get("password2")
 
-        if len(password) <= 8:
-            raise serializers.ValidationError(
-                {"password": "Password must be longer than 8 characters."}
-            )
+        if p1 is not None or p2 is not None:
+            if not p1 or not p2:
+                raise serializers.ValidationError({"password2": "Both password1 and password2 are required."})
+            if p1 != p2:
+                raise serializers.ValidationError({"password2": "Passwords do not match."})
 
-        
-        if not re.search(r"[A-Z]", password):
-            raise serializers.ValidationError(
-                {"password": "Password must include at least one uppercase letter."}
-            )
+            self._validate_password_rules(p1)
+            attrs["password"] = p1
+            return attrs
 
-        if not re.search(r"[a-z]", password):
-            raise serializers.ValidationError(
-                {"password": "Password must include at least one lowercase letter."}
-            )
+        if not p:
+            raise serializers.ValidationError({"password": "Password is required."})
 
+        self._validate_password_rules(p)
         return attrs
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        validated_data.pop("password1", None)
+        validated_data.pop("password2", None)
 
+        password = validated_data.pop("password")
+        user = User.objects.create_user(**validated_data, password=password)
+        return user
+    
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

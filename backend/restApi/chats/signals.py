@@ -14,5 +14,5 @@ def create_usage(sender, instance, created, **kwargs):
         Usage.objects.create(
             user=instance,
             messages_limit=50,
-            reset_date=timezone.now().date() + timedelta(days=30)
+            reset_date=timezone.now() + timedelta(days=30)
         )
