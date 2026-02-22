@@ -24,6 +24,8 @@ from drf_spectacular.utils import extend_schema, inline_serializer,extend_schema
 import json
 import urllib.request
 
+from django.conf import settings
+
 class ChatListCreateView(generics.ListCreateAPIView):
     serializer_class = ChatSerializer
     permission_classes = [IsAuthenticated]
@@ -47,10 +49,35 @@ class ChatDetailView(generics.RetrieveDestroyAPIView):
             user=self.request.user
         )
     
+# @extend_schema_view(
+#     post=extend_schema(
+#         request=ChatMessageCreateSerializer,
+#         responses=ChatMessageSerializer,
+#     ),
+#     get=extend_schema(
+#         responses=ChatMessageSerializer(many=True),
+#     ),
+# )
 @extend_schema_view(
     post=extend_schema(
         request=ChatMessageCreateSerializer,
-        responses=ChatMessageSerializer,
+        responses={
+            201: inline_serializer(
+                name="SendMessageResponse",
+                fields={
+                    "user": ChatMessageSerializer(),
+                    "assistant": ChatMessageSerializer(),
+                },
+            ),
+            403: inline_serializer(
+                name="MonthlyLimitExceeded",
+                fields={"detail": serializers.CharField()},
+            ),
+            503: inline_serializer(
+                name="LLMUnavailable",
+                fields={"detail": serializers.CharField()},
+            ),
+        },
     ),
     get=extend_schema(
         responses=ChatMessageSerializer(many=True),
@@ -104,32 +131,49 @@ class SendMessageView(generics.ListCreateAPIView):
         # import json
         # import urllib.request
 
-        # Construir contexto: últimos 10 mensajes (incluye el que acabas de guardar)
-        history = ChatMessage.objects.filter(chat=chat).order_by("-created_at")[:10]
+        # Construir contexto: últimos 10 mensajes
+        #history = ChatMessage.objects.filter(chat=chat).order_by("-created_at")[:10]
+        history = ChatMessage.objects.filter(chat=chat).order_by("-created_at")[:settings.CHAT_CONTEXT_N]
         history = reversed(history)
 
         messages = [{"role": m.role, "content": m.content} for m in history]
 
         payload = {
-            "model": "llama3.2:1b",  # o ponlo luego en settings/env
+            
+            "model": settings.OLLAMA_MODEL,
             "messages": messages,
             "stream": False,
         }
 
         req = urllib.request.Request(
-            "http://ollama:11434/api/chat",
+            
+            f"{settings.OLLAMA_BASE_URL}/api/chat",
             data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json"},
         )
 
+        # try:
+        #     #with urllib.request.urlopen(req, timeout=60) as r:
+        #     with urllib.request.urlopen(req, timeout=settings.OLLAMA_TIMEOUT) as r:
+                
+        #         out = json.loads(r.read().decode("utf-8"))
+        #     assistant_text = out["message"]["content"]
+        # except Exception:
+        #     assistant_text = "⚠️ Error generating response. Please try again."
+
         try:
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=settings.OLLAMA_TIMEOUT) as r:
                 out = json.loads(r.read().decode("utf-8"))
             assistant_text = out["message"]["content"]
         except Exception:
-            assistant_text = "⚠️ Error generating response. Please try again."
+            return Response(
+                {"detail": "LLM service unavailable. Please try again."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
 
+        
         # Guardar respuesta del asistente
+        # Guardar respuesta del asistente SOLO si salió bien
         assistant_msg = ChatMessage.objects.create(
             chat=chat,
             role="assistant",
