@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework import status, serializers
 
-from .models import Chat
+
 from .serializers import ChatSerializer
 
 from rest_framework.views import APIView
@@ -49,15 +49,7 @@ class ChatDetailView(generics.RetrieveDestroyAPIView):
             user=self.request.user
         )
     
-# @extend_schema_view(
-#     post=extend_schema(
-#         request=ChatMessageCreateSerializer,
-#         responses=ChatMessageSerializer,
-#     ),
-#     get=extend_schema(
-#         responses=ChatMessageSerializer(many=True),
-#     ),
-# )
+
 @extend_schema_view(
     post=extend_schema(
         request=ChatMessageCreateSerializer,
@@ -127,12 +119,6 @@ class SendMessageView(generics.ListCreateAPIView):
         # Guardar mensaje
         message = serializer.save(chat=chat, role="user")
 
-        # # ---- Llamar a Ollama con contexto del chat ----
-        # import json
-        # import urllib.request
-
-        # Construir contexto: últimos 10 mensajes
-        #history = ChatMessage.objects.filter(chat=chat).order_by("-created_at")[:10]
         history = ChatMessage.objects.filter(chat=chat).order_by("-created_at")[:settings.CHAT_CONTEXT_N]
         history = reversed(history)
 
@@ -181,7 +167,3 @@ class SendMessageView(generics.ListCreateAPIView):
             status=status.HTTP_201_CREATED
         )
 
-        # return Response(
-        #     ChatMessageSerializer(message).data,
-        #     status=status.HTTP_201_CREATED
-        # )

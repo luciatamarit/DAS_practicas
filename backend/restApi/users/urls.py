@@ -4,7 +4,6 @@ from .views import (
     ProfileView,
     LogoutView,
     ChangePasswordView,
-    UsageView,
 )
 
 urlpatterns = [

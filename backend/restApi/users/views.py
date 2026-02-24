@@ -69,7 +69,6 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # Si usáis blacklist de JWT, aquí se invalidaría el refresh token
         return Response({"detail": "Logged out successfully."})
 
 

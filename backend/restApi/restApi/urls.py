@@ -8,11 +8,6 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from users.views import UsageView
 
-# urlpatterns = [
-
-#     path("api/users/", include("users.urls")),
-    
-# ]
 
 urlpatterns = [
     path("admin/", admin.site.urls),

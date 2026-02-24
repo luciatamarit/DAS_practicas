@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 
-from users.models import Usage  # ajusta si tu app se llama distinto
+from users.models import Usage  
 
 User = get_user_model()
 
