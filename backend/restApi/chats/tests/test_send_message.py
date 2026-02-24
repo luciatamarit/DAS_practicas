@@ -40,7 +40,7 @@ class SendMessageTests(APITestCase):
         self.assertEqual(ChatMessage.objects.filter(chat=self.chat).count(), 2)
         roles = list(ChatMessage.objects.filter(chat=self.chat).values_list("role", flat=True))
         self.assertIn("user", roles)
-        self.assertIn("assistant", roles)
+        self.assertIn("system", roles)
 
         self.assertIn("user", res.data)
         self.assertIn("assistant", res.data)

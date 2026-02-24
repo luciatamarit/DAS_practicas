@@ -152,14 +152,7 @@ class SendMessageView(generics.ListCreateAPIView):
             headers={"Content-Type": "application/json"},
         )
 
-        # try:
-        #     #with urllib.request.urlopen(req, timeout=60) as r:
-        #     with urllib.request.urlopen(req, timeout=settings.OLLAMA_TIMEOUT) as r:
-                
-        #         out = json.loads(r.read().decode("utf-8"))
-        #     assistant_text = out["message"]["content"]
-        # except Exception:
-        #     assistant_text = "⚠️ Error generating response. Please try again."
+
 
         try:
             with urllib.request.urlopen(req, timeout=settings.OLLAMA_TIMEOUT) as r:
@@ -172,13 +165,12 @@ class SendMessageView(generics.ListCreateAPIView):
             )
 
         
-        # Guardar respuesta del asistente
-        # Guardar respuesta del asistente SOLO si salió bien
+
         assistant_msg = ChatMessage.objects.create(
-            chat=chat,
-            role="assistant",
-            content=assistant_text
-        )
+        chat=chat,
+        role="system",   
+        content=assistant_text
+    )
 
         # Devolver ambos mensajes (user + assistant)
         return Response(
