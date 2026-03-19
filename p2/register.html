@@ -1,53 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
 </head>
 <body>
 
-  <header>
-    <h1>DAS App</h1>
-  </header>
+<header>
+    <h1>Crear cuenta</h1>
+</header>
 
-  <main>
-    <section class="form-card">
-    <h2>Registro</h2>
+<main>
+    <form id="registerForm">
 
-    <form id="register-form">
-      ...
-    </form>
-  </section>
-    <section>
-      <h2>Registro</h2>
+        <fieldset>
+            <legend>Datos de registro</legend>
 
-        <form id="register-form">
-            <div>
-                <label for="register-email">Email</label>
-                <input type="email" id="register-email" name="email" required>
-            </div>
+            <p>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required>
+            </p>
 
-            <div>
-                <label for="register-password">Contraseña</label>
-                <input type="password" id="register-password" name="password" required>
-            </div>
+            <p>
+                <label for="password">Contraseña:</label><br>
+                <input type="password" id="password" name="password" required>
+            </p>
 
-            <div>
-                <label for="register-confirm-password">Confirmación de contraseña</label>
-                <input type="password" id="register-confirm-password" name="confirm-password" required>
-            </div>
+            <p>
+                <label for="confirm_password">Confirmar contraseña:</label><br>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </p>
 
+        </fieldset>
+
+        <p>
             <button type="submit">Registrarse</button>
-        </form>
-    </section>
-  </main>
+        </p>
 
-  <footer>
-    <p>Práctica 2</p>
-  </footer>
+    </form>
+</main>
 
-  <script src="script.js"></script>
+<footer>
+    <p>&copy; 2026 - DAS</p>
+</footer>
+
+<script src="script.js"></script>
+
 </body>
 </html>
