@@ -17,6 +17,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         });
 
         const data = await response.json();
+        
         console.log("STATUS:", response.status);
         console.log("RESPUESTA LOGIN:", data);
 
@@ -24,6 +25,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
             localStorage.setItem("access", data.access);
             localStorage.setItem("refresh", data.refresh);
             alert("Login correcto");
+
         } else {
             alert(JSON.stringify(data));
         }

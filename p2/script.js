@@ -26,6 +26,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
         });
 
         const data = await response.json();
+        
         console.log("STATUS:", response.status);
         console.log("RESPUESTA BACKEND:", data);
 
