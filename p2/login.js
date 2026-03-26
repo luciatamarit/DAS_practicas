@@ -1,29 +1,31 @@
 document.getElementById("loginForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const email = document.getElementById("email").value;
+    const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
     try {
-        const response = await fetch("/login", {
+        const response = await fetch("http://localhost:8000/api/auth/login/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({
+                username,
+                password
+            })
         });
 
         const data = await response.json();
+        console.log("STATUS:", response.status);
+        console.log("RESPUESTA LOGIN:", data);
 
         if (response.ok) {
-            if (data.token) {
-                localStorage.setItem("token", data.token);
-            }
-
+            localStorage.setItem("access", data.access);
+            localStorage.setItem("refresh", data.refresh);
             alert("Login correcto");
-            window.location.href = "/home";
         } else {
-            alert("Error: " + (data.message || "Credenciales incorrectas"));
+            alert(JSON.stringify(data));
         }
 
     } catch (error) {
