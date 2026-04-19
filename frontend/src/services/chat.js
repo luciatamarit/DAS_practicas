@@ -14,7 +14,7 @@ export async function getChats() {
   });
 
   const data = await response.json();
-  return { response, data };
+  return { response, data }; //pide la lista de chats
 }
 
 export async function createChat(title) {
@@ -65,7 +65,7 @@ export async function deleteChat(chatId) {
   return { response, data };
 }
 
-export async function getUsage() {
+export async function getUsage() { // esta funcion pide al backend los datos del usuario
   const response = await fetch("http://localhost:8000/api/usage/", {
     method: "GET",
     headers: getAuthHeaders(),

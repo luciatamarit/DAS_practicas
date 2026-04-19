@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState } from "react"; // sirven para gusrar varlores que cambian en la pantalla : username, email, password...
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import MainLayout from "../../components/MainLayout";
@@ -22,7 +22,7 @@ export default function RegisterPage() {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault();  //  evita que el formulario recargue la pagina automaticamanete
     setError("");
     setSuccess("");
 

@@ -10,3 +10,7 @@ export default function MainLayout({ children }) {
     </div>
   );
 }
+// MainLayout devuelve esa estrcutura 
+//arriba el header, en medio el contenido de la pagina y abajo el Footer
+
+
