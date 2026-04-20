@@ -1,0 +1,26 @@
+.page {
+  width: 100%;
+  max-width: 1360px;
+  height: 78vh;
+  display: flex;
+  gap: 20px;
+}
+
+.chatMain {
+  flex: 1;
+  display: flex;
+}
+
+.loadingText {
+  margin: auto;
+  color: #555555;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 900px) {
+  .page {
+    height: auto;
+    min-height: 75vh;
+    flex-direction: column;
+  }
+}

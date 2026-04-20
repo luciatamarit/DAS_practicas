@@ -6,7 +6,6 @@ export default function Home() {
     <MainLayout>
       <div className="auth-card">
         <h2>Bienvenida</h2>
-        <p>Frontend de la práctica 3.</p>
         <div className="auth-link">
           <Link href="/login">Ir a login</Link>
         </div>

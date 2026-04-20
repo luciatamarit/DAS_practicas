@@ -3,6 +3,8 @@ html, body {
   padding: 0;
   min-height: 100%;
   font-family: Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
   background-color: #f5f5f5;
   color: #222;
 }
@@ -16,78 +18,42 @@ a {
   text-decoration: none;
 }
 
-.page-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  padding: 18px 24px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #dcdcdc;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.footer {
-  padding: 16px 24px;
-  background-color: #ffffff;
-  border-top: 1px solid #dcdcdc;
-  text-align: center;
-}
-
-.footer p {
-  margin: 0;
-  font-size: 14px;
-}
-
-.main-content {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 32px 16px;
-}
-
 .auth-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 540px;
   background-color: #ffffff;
   border: 1px solid #dcdcdc;
-  border-radius: 12px;
-  padding: 28px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: 40px 36px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .auth-card h2 {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   text-align: center;
+  font-size: 2rem;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
 }
 
 .auth-form input {
   width: 100%;
-  padding: 12px;
-  font-size: 15px;
+  padding: 15px 16px;
+  font-size: 1rem;
   border: 1px solid #cfcfcf;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .auth-form button {
-  padding: 12px;
-  font-size: 15px;
+  padding: 15px 16px;
+  font-size: 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background-color: #222;
   color: white;
   cursor: pointer;
@@ -100,19 +66,19 @@ a {
 .error-text {
   margin: 0;
   color: #c62828;
-  font-size: 14px;
+  font-size: 0.95rem;
 }
 
 .success-text {
   margin: 0;
   color: #2e7d32;
-  font-size: 14px;
+  font-size: 0.95rem;
 }
 
 .auth-link {
-  margin-top: 16px;
+  margin-top: 20px;
   text-align: center;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .auth-link a {
@@ -122,172 +88,4 @@ a {
 .auth-form button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-}
-
-.chat-page {
-  width: 100%;
-  max-width: 1200px;
-  height: 75vh;
-  display: flex;
-  gap: 16px;
-}
-
-.chat-sidebar {
-  width: 280px;
-  background-color: #ffffff;
-  border: 1px solid #dcdcdc;
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.sidebar-header h3 {
-  margin: 0;
-}
-
-.sidebar-header button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px;
-  background-color: #222;
-  color: white;
-  cursor: pointer;
-}
-
-.chat-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  overflow-y: auto;
-}
-
-.chat-list-item {
-  display: flex;
-  gap: 8px;
-}
-
-.chat-list-item.active .chat-select-button {
-  background-color: #e8e8e8;
-}
-
-.chat-select-button {
-  flex: 1;
-  text-align: left;
-  padding: 10px;
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
-  background-color: white;
-  cursor: pointer;
-}
-
-.chat-delete-button {
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #c62828;
-  color: white;
-  cursor: pointer;
-}
-
-.chat-main {
-  flex: 1;
-  display: flex;
-}
-
-.chat-window {
-  width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #dcdcdc;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.chat-window-header {
-  padding: 16px;
-  border-bottom: 1px solid #dcdcdc;
-}
-
-.chat-window-header h3 {
-  margin: 0;
-}
-
-.messages-container {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.message-row {
-  display: flex;
-}
-
-.message-row.user {
-  justify-content: flex-end;
-}
-
-.message-row.bot {
-  justify-content: flex-start;
-}
-
-.message-bubble {
-  max-width: 70%;
-  padding: 12px 14px;
-  border-radius: 12px;
-  line-height: 1.4;
-}
-
-.message-bubble.user {
-  background-color: #222;
-  color: white;
-}
-
-.message-bubble.bot {
-  background-color: #ececec;
-  color: #222;
-}
-
-.message-input-form {
-  display: flex;
-  gap: 12px;
-  padding: 16px;
-  border-top: 1px solid #dcdcdc;
-}
-
-.message-input-form input {
-  flex: 1;
-  padding: 12px;
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
-}
-
-.message-input-form button {
-  padding: 12px 16px;
-  border: none;
-  border-radius: 8px;
-  background-color: #222;
-  color: white;
-  cursor: pointer;
-}
-
-.message-input-form button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.loading-text,
-.empty-chat-text {
-  color: #555;
 }

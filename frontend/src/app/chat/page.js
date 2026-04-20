@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import MainLayout from "../../components/MainLayout";
 import Sidebar from "../../components/Sidebar";
 import ChatWindow from "../../components/ChatWindow";
+import styles from "./page.module.css";
 import {
   createChat,
   deleteChat,
@@ -20,6 +21,7 @@ export default function ChatPage() {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [error, setError] = useState("");
+  const selectedChat = chats.find((chat) => chat.id === selectedChatId) ?? null;
 
   const loadChats = async () => {
     try {
@@ -60,7 +62,11 @@ export default function ChatPage() {
   };
 
   useEffect(() => {
-    loadChats();
+    const timeoutId = setTimeout(() => {
+      void loadChats();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleSelectChat = async (chatId) => {
@@ -69,26 +75,32 @@ export default function ChatPage() {
   };
 
   const handleCreateChat = async () => {
-  try {
-    setError("");
+    try {
+      setError("");
 
-    const title = `Nuevo chat ${chats.length + 1}`;
-    const { response, data } = await createChat(title);
+      const requestedTitle = window.prompt("Escribe un título para el chat", "Nuevo chat");
 
-    if (response.ok) {
-      await loadChats();
-      const newChatId = data.id;
-      setSelectedChatId(newChatId);
-      await loadMessages(newChatId);
-    } else {
-      console.log("ERROR CREATE CHAT:", data);
-      setError(JSON.stringify(data));
+      if (requestedTitle === null) {
+        return;
+      }
+
+      const title = requestedTitle.trim() || "Nuevo chat";
+      const { response, data } = await createChat(title);
+
+      if (response.ok) {
+        await loadChats();
+        const newChatId = data.id;
+        setSelectedChatId(newChatId);
+        await loadMessages(newChatId);
+      } else {
+        console.log("ERROR CREATE CHAT:", data);
+        setError(JSON.stringify(data));
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Error de conexión al crear el chat.");
     }
-  } catch (err) {
-    console.error(err);
-    setError("Error de conexión al crear el chat.");
-  }
-};
+  };
 
   const handleDeleteChat = async (chatId) => {
     try {
@@ -154,7 +166,7 @@ export default function ChatPage() {
 
   return (
     <MainLayout>
-      <div className="chat-page">
+      <div className={styles.page}>
         <Sidebar
           chats={chats}
           selectedChatId={selectedChatId}
@@ -163,9 +175,9 @@ export default function ChatPage() {
           onDeleteChat={handleDeleteChat}
         />
 
-        <div className="chat-main">
+        <div className={styles.chatMain}>
           {loadingChats ? (
-            <p className="loading-text">Cargando chats...</p>
+            <p className={styles.loadingText}>Cargando chats...</p>
           ) : (
             <ChatWindow
               messages={messages}
@@ -174,6 +186,7 @@ export default function ChatPage() {
               sendingMessage={sendingMessage}
               error={error}
               selectedChatId={selectedChatId}
+              selectedChatTitle={selectedChat?.title || "Nuevo chat"}
             />
           )}
         </div>
