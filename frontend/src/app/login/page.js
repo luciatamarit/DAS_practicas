@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import MainLayout from "../../components/MainLayout";
 import { loginUser } from "../../services/auth";
+import styles from "./login.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -51,11 +52,12 @@ export default function LoginPage() {
 
   return (
     <MainLayout>
-      <div className="auth-card">
-        <h2>Iniciar sesión</h2>
+      <div className={styles.card}>
+        <h2 className={styles.title}>Iniciar sesión</h2>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <input
+            className={styles.input}
             type="text"
             placeholder="Nombre de usuario"
             value={username}
@@ -63,21 +65,22 @@ export default function LoginPage() {
           />
 
           <input
+            className={styles.input}
             type="password"
             placeholder="Contraseña"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
 
-          {error && <p className="error-text">{error}</p>}
-          {success && <p className="success-text">{success}</p>}
+          {error && <p className={styles.error}>{error}</p>}
+          {success && <p className={styles.success}>{success}</p>}
 
-          <button type="submit" disabled={loading}>
+          <button className={styles.button} type="submit" disabled={loading}>
             {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
 
-        <div className="auth-link">
+        <div className={styles.linkText}>
           ¿No tienes cuenta? <Link href="/register">Regístrate</Link>
         </div>
       </div>

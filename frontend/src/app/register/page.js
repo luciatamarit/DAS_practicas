@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import MainLayout from "../../components/MainLayout";
 import { registerUser } from "../../services/auth";
+import styles from "./register.module.css";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -77,11 +78,12 @@ export default function RegisterPage() {
 
   return (
     <MainLayout>
-      <div className="auth-card">
-        <h2>Crear cuenta</h2>
+      <div className={styles.card}>
+        <h2 className={styles.title}>Crear cuenta</h2>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <input
+            className={styles.input}
             type="text"
             placeholder="Nombre de usuario"
             value={username}
@@ -89,6 +91,7 @@ export default function RegisterPage() {
           />
 
           <input
+            className={styles.input}
             type="email"
             placeholder="Correo electrónico"
             value={email}
@@ -96,6 +99,7 @@ export default function RegisterPage() {
           />
 
           <input
+            className={styles.input}
             type="password"
             placeholder="Contraseña"
             value={password}
@@ -103,21 +107,22 @@ export default function RegisterPage() {
           />
 
           <input
+            className={styles.input}
             type="password"
             placeholder="Confirmar contraseña"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
           />
 
-          {error && <p className="error-text">{error}</p>}
-          {success && <p className="success-text">{success}</p>}
+          {error && <p className={styles.error}>{error}</p>}
+          {success && <p className={styles.success}>{success}</p>}
 
-          <button type="submit" disabled={loading}>
+          <button className={styles.button} type="submit" disabled={loading}>
             {loading ? "Registrando..." : "Registrarse"}
           </button>
         </form>
 
-        <div className="auth-link">
+        <div className={styles.linkText}>
           ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
         </div>
       </div>

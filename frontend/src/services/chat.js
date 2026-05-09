@@ -1,3 +1,4 @@
+// CREO UNA FUNCION PARA PODER REUTILIZARLA 
 function getAuthHeaders() {
   const token = localStorage.getItem("access");
 
@@ -7,6 +8,7 @@ function getAuthHeaders() {
   };
 }
 
+// PIDE LOS CHATS
 export async function getChats() {
   const response = await fetch("http://localhost:8000/api/chats/", {
     method: "GET",
@@ -14,9 +16,10 @@ export async function getChats() {
   });
 
   const data = await response.json();
-  return { response, data }; //pide la lista de chats
+  return { response, data }; 
 }
 
+// CREA EL CHAT Y LE PASA EL TITULO 
 export async function createChat(title) {
   const response = await fetch("http://localhost:8000/api/chats/", {
     method: "POST",
@@ -28,6 +31,7 @@ export async function createChat(title) {
   return { response, data };
 }
 
+// COGE UN CHAT EN ESPECIFICO QUE LO MANDA Y LO METE A LA URL
 export async function getChatMessages(chatId) {
   const response = await fetch(`http://localhost:8000/api/chats/${chatId}/messages/`, {
     method: "GET",
@@ -38,6 +42,7 @@ export async function getChatMessages(chatId) {
   return { response, data };
 }
 
+// LE MANDA EL CONTENIDO DEL MENSAJE Y EL ID DEL CHAT AL QUE PERTENECE
 export async function sendMessage(chatId, content) {
   const response = await fetch(`http://localhost:8000/api/chats/${chatId}/messages/`, {
     method: "POST",
@@ -49,6 +54,7 @@ export async function sendMessage(chatId, content) {
   return { response, data };
 }
 
+// MANDA EL ID DEL CHAT QUE TIENE QUE ELIMINAR
 export async function deleteChat(chatId) {
   const response = await fetch(`http://localhost:8000/api/chats/${chatId}/`, {
     method: "DELETE",

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import MainLayout from "../../components/MainLayout";
 import Sidebar from "../../components/Sidebar";
 import ChatWindow from "../../components/ChatWindow";
-import styles from "./page.module.css";
+import styles from "./chat.module.css";
 import {
   createChat,
   deleteChat,

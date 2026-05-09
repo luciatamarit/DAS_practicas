@@ -8,7 +8,7 @@ class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
         fields = ["id", "title", "created_at", "user_id"]
-        read_only_fields = ["id", "created_at", "user_id"]
+        read_only_fields = ["id", "created_at", "user_id"] ##CAMPOS QUE NO PUEDO MODIFICAR 
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class ChatMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatMessage
         fields = ["id", "role", "content", "chat_id"]
-        read_only_fields = ["id", "chat_id"]
+        read_only_fields = ["id", "chat_id"] ##CAMOS QUE NO PUEDO MODIFICAR
 
 class ChatMessageCreateSerializer(serializers.ModelSerializer):
     class Meta:
