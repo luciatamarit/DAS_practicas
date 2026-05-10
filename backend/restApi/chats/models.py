@@ -21,8 +21,8 @@ class Chat(models.Model):
 
 class ChatMessage(models.Model):
     ROLE_CHOICES = [
-        ("system", "system"),
-        ("user", "user"),
+        ("SYSTEM", "system"),
+        ("USER", "user"),
     ]
 
     chat = models.ForeignKey(

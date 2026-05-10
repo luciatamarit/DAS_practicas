@@ -31,21 +31,26 @@ class ChatListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        ## ORDENA LOS CHATS POR FECHA DE CREACION EL MAS NUEVO SALE PRIMERO
         return Chat.objects.filter(user=self.request.user).order_by("-created_at")
 
     def perform_create(self, serializer):
+        ## CREA UN NUEVO CHAT ASOCIADO AL USUARIO 
         serializer.save(user=self.request.user)
+
 
 class ChatDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = ChatSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        ## OBTIENE TODOS LOS CHATS
         return Chat.objects.filter(user=self.request.user)
 
     def get_object(self):
+        ## COGE EL CHAT CON EL ID QUE LE PASAS Y COMPRUEBA QUE ES DE TU USUARIO
         return Chat.objects.get(
-            id=self.kwargs["chat_id"],
+            id=self.kwargs["chat_id"], ## LO COGE DE LA URL QUE TIENE ESE PARAMETRO
             user=self.request.user
         )
     
@@ -86,20 +91,23 @@ class SendMessageView(generics.ListCreateAPIView):
             chat__id=self.kwargs["chat_id"],
             chat__user=self.request.user
         ).order_by("created_at")
+    ## COGE EL CHAT CON ESE ID, COMPRUEBA QUE SEA DE ESE USER Y LOS ORDENA
 
     def create(self, request, *args, **kwargs):
         serializer = ChatMessageCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        ##BUSCO EL CHAT AL QUE VOY A ENVIAR EL MENSAJE
         chat = Chat.objects.get(
             id=self.kwargs["chat_id"],
             user=self.request.user
-        )
+        ) 
 
+        ## CONSIGO O CREO EL USAGE
         usage, _ = Usage.objects.get_or_create(user=request.user)
 
+        # Comprobar si toca reiniciar el contador
         now = timezone.now()
-
         if now >= usage.reset_date:
             usage.messages_used = 0
             usage.reset_date = now + timedelta(days=30)
@@ -116,7 +124,7 @@ class SendMessageView(generics.ListCreateAPIView):
         usage.messages_used += 1
         usage.save()
 
-        # Guardar mensaje
+        # Guardar mensaje en ese chat con role de usuario
         message = serializer.save(chat=chat, role="user")
 
         history = ChatMessage.objects.filter(chat=chat).order_by("-created_at")[:settings.CHAT_CONTEXT_N]
@@ -139,18 +147,16 @@ class SendMessageView(generics.ListCreateAPIView):
         )
 
 
-
         try:
             with urllib.request.urlopen(req, timeout=settings.OLLAMA_TIMEOUT) as r:
                 out = json.loads(r.read().decode("utf-8"))
             assistant_text = out["message"]["content"]
+
         except Exception:
             return Response(
                 {"detail": "LLM service unavailable. Please try again."},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
-
-        
 
         assistant_msg = ChatMessage.objects.create(
         chat=chat,

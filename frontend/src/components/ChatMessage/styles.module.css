@@ -1,0 +1,29 @@
+.messageRow {
+  display: flex;
+}
+
+.userRow {
+  justify-content: flex-end;
+}
+
+.botRow {
+  justify-content: flex-start;
+}
+
+.messageBubble {
+  max-width: 70%;
+  padding: 16px 18px;
+  border-radius: 14px;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.userBubble {
+  background-color: #222222;
+  color: #ffffff;
+}
+
+.botBubble {
+  background-color: #ececec;
+  color: #222222;
+}

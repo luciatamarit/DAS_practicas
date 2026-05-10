@@ -1,0 +1,41 @@
+.chatWindow {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chatWindowHeader {
+  padding: 20px 22px;
+  border-bottom: 1px solid #dcdcdc;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.messagesContainer {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.errorText {
+  margin: 0;
+  color: #c62828;
+  font-size: 1rem;
+}
+
+.loadingText,
+.emptyChatText {
+  margin: 0;
+  color: #555555;
+  font-size: 1rem;
+}

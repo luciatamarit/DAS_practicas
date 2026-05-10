@@ -1,0 +1,33 @@
+.header {
+  padding: 22px 30px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #dcdcdc;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 32px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.link {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.separator {
+  color: #777777;
+}

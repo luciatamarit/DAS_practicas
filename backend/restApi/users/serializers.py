@@ -3,12 +3,11 @@ from rest_framework import serializers
 from .models import Usage
 import re
 
-User = get_user_model()
+User = get_user_model() ## MI MODELO DE USUARIO DE DJANGO
 
 class RegisterSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True, required=False, allow_blank=False)
     password2 = serializers.CharField(write_only=True, required=False, allow_blank=False)
-
     class Meta:
         model = User
         fields = ("username", "email", "password", "password1", "password2")
@@ -35,6 +34,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"password": "Password must include at least one lowercase letter."})
 
     def validate(self, attrs):
+        ## ACEPTO DOS OPCIONES O P1 Y P2 O SOLO P 
+
+        ## EN REALIDAD SIEMPRE SIGO LA LOGIA DE P1 Y P2 PORQUE ES LO QUE ME MUESTRA MI PAGINA DE LOGIN
         p = attrs.get("password")
         p1 = attrs.get("password1")
         p2 = attrs.get("password2")
@@ -60,7 +62,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data.pop("password2", None)
 
         password = validated_data.pop("password")
+        ## HAGO CREATE_USER PORQUE ESO CREA Y GUARDO
+        ##  Y SEPARO LA CONTRASEÑA PARA CIFRARLA
         user = User.objects.create_user(**validated_data, password=password)
+        ## ESTO CREA UN USUARIO EN LA BASE DE DATOS 
         return user
     
 class ProfileSerializer(serializers.ModelSerializer):
@@ -70,6 +75,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
+    ## RECIBO LAS DOS CONTRASEÑAS Y VALIDO QUE LA SEGUNDA SIGA MIS RESTRICCIONES
     old_password = serializers.CharField()
     new_password = serializers.CharField()
 
@@ -94,7 +100,10 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class UsageSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(source="user.id", read_only=True)
-
+    ## ESTOY CAMBIANDO EL NOMBRE DE USER A USER_ID QUE GUARDA EL ID DEL USUARIO 
+    
     class Meta:
         model = Usage
         fields = ["id", "user_id", "messages_used", "messages_limit", "reset_date"]
+        ## ID ES EL ID DEL MODELO USAGE
+        ## USER_ID ES EL ID DEL MODELO USER

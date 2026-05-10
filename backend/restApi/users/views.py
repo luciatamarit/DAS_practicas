@@ -17,18 +17,19 @@ from .serializers import (
 
 User = get_user_model()
 
-
-
 class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
     queryset = User.objects.all()
+    ## AL SER CREATE LO HACE EL DRF POR DENTRO Y HACE TODO LO DEL SERILIZADOR
+    ## VALIDACIONES Y CREATE Y GUARDA EL NUEVO USUARIO SI CUMPLE TODO 
 
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        ##SOLO LEE LOS DATOS DEL USUARIO 
         serializer = ProfileSerializer(request.user)
         return Response(serializer.data)
 
@@ -36,17 +37,18 @@ class ProfileView(APIView):
         serializer = ProfileSerializer(
             request.user, data=request.data, partial=True
         )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        ## QUE USUARIO VOY A ACTULAIZAR Y QUE DATOS VOY A METER
 
+        serializer.is_valid(raise_exception=True) ## VALIDA LOS DATOS
+        serializer.save() ## GUARDA LOS CAMBIOS EN LA BD
+        return Response(serializer.data) 
 
 
 class ChangePasswordView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
 
-    def get_object(self):
+    def get_object(self): ## CUAL ES EL OBJETO QUE VAS A ACTUALIZAR
         return self.request.user
 
     def update(self, request, *args, **kwargs):
@@ -54,18 +56,21 @@ class ChangePasswordView(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
 
         if not request.user.check_password(serializer.validated_data["old_password"]):
+        ## ESO COMPARA LA QUE HE MANDADO COM ANTIGUAL CON LA QUE TENGO COMO ANTIGUA
             return Response(
                 {"detail": "Incorrect old password."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         request.user.set_password(serializer.validated_data["new_password"])
-        request.user.save()
+        ## GUARDA LA NUEVA CONTRASEÑA LO HACE CON SET_PASSWORD PORQUE LO CIFRA
+        request.user.save() ## GUARDA EL CAMBIO
 
         return Response({"detail": "Password updated successfully."})
 
 
 class LogoutView(APIView):
+    ## MENSAJE SIMBOLICO PUNTO DE CONTROL
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -77,5 +82,7 @@ class UsageView(APIView):
 
     def get(self, request):
         usage, _ = Usage.objects.get_or_create(user=request.user)
+        ## BUSCA SI EXISTE USAGE PARA EL USUARIO SI EXISTE LO DEVUELVE Y SINO LO CREA
         serializer = UsageSerializer(usage)
+        ## MANDA EL JSON SERILIZADO DE LA TABLA
         return Response(serializer.data)
